@@ -29,13 +29,14 @@ let currentAngle = Math.atan2(input.magneticForce(Dimension.X), input.magneticFo
 let PID_error = targetAngle - currentAngle
 basic.forever(function () {
     currentAngle = Math.atan2(input.magneticForce(Dimension.X), input.magneticForce(Dimension.Y))
-    serial.writeValue("a.1", currentAngle)
+    serial.writeValue("currentAngle", currentAngle)
     PID_lastError = PID_error
     PID_error = targetAngle - currentAngle
     PID_DiffError = PID_lastError - PID_error
     PID_IntError = PID_IntError + PID_error
+    serial.writeValue("error", PID_error)
     currentSpeed = Math.constrain(PID_Kp * PID_error + PID_Ki * PID_IntError + PID_Kd * PID_DiffError, -1, 1)
-    serial.writeValue("b.1", currentSpeed)
+    serial.writeValue("currentSpeed", currentSpeed)
     if (currentSpeed > 0) {
         Kitronik_Robotics_Board.motorOn(Kitronik_Robotics_Board.Motors.Motor4, Kitronik_Robotics_Board.MotorDirection.Forward, maxSpeed * Math.sqrt(currentSpeed))
     } else {
